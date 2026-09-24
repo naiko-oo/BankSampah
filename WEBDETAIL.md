@@ -11,15 +11,12 @@ Sistem memiliki dua peran pengguna:
 * **Admin atau Pengurus:** mengelola data operasional dan mencatat transaksi nasabah.
 * **Nasabah atau Warga:** memantau saldo, setoran, penarikan, tarif, dan riwayat transaksi pribadi.
 
-## Teknologi yang Digunakan
+## Tech Stack
 
 * **Frontend:** PHP server-rendered, HTML, CSS, Bootstrap 5, dan Bootstrap Icons.
 * **Backend:** PHP.
 * **Database:** MySQL.
 * **Koneksi Database:** PDO dengan prepared statement.
-* **Autentikasi:** Sesi PHP dengan pembagian akses Admin dan Nasabah.
-* **Format API:** Tidak menggunakan REST API pada versi ini. Halaman memproses permintaan secara langsung melalui PHP.
-* **Server Lokal:** PHP Development Server atau web server PHP seperti Apache.
 
 ## Aturan Kode
 
