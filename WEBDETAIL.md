@@ -1,5 +1,3 @@
-# Sistem Informasi Bank Sampah Digital RT/RW
-
 ## Tujuan
 Sistem Informasi Bank Sampah Digital RT/RW dibuat untuk membantu pengurus mencatat setoran sampah, penarikan saldo, data nasabah, kategori sampah, dan laporan transaksi secara terstruktur.
 
