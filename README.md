@@ -47,7 +47,7 @@ Proyek ini dikembangkan untuk mendigitalkan proses pencatatan transaksi tersebut
 1. Siapkan PHP 8 atau lebih baru dengan ekstensi `pdo_mysql`, serta MySQL/MariaDB.
 2. Buat database dan tabel dengan mengimpor `backend/database/schema.sql` melalui phpMyAdmin atau klien MySQL.
 3. Sesuaikan host, port, nama database, username, dan kata sandi pada `backend/config/database.php`.
-4. Jadikan folder `frontend/` sebagai document root server lokal. Pada XAMPP, atur virtual host Apache agar document root menunjuk ke folder tersebut. Alternatifnya, jalankan dari folder proyek dengan `php -S localhost:8000 -t frontend`, lalu buka `http://localhost:8000/`.
+4. Jadikan folder `frontend/` sebagai document root server lokal. Pada XAMPP, atur virtual host Apache agar document root menunjuk ke folder tersebut. Untuk server development, jalankan dari folder proyek dengan `php -S localhost:8000 -t frontend`. Jika `php` tidak dikenali di PowerShell, gunakan `C:\xampp\php\php.exe -S localhost:8000 -t frontend`. Buka `http://localhost:8000/`.
 
 ### Akun Demo
 | Peran | Username | Kata sandi |
