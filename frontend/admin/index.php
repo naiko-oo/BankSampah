@@ -1,7 +1,7 @@
 <?php
 // admin/index.php
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/helpers.php';
+require_once __DIR__ . '/../../backend/config/database.php';
+require_once __DIR__ . '/../../backend/config/helpers.php';
 
 // Pastikan hanya admin yang bisa mengakses
 auth_require('admin');
@@ -188,7 +188,7 @@ require_once __DIR__ . '/../templates/header.php';
                     <i class="bi bi-chevron-right text-muted"></i>
                 </a>
 
-                <a href="/admin/nasabah/tambah.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                <a href="/admin/nasabah/index.php" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
                     <div class="d-flex align-items-center">
                         <i class="bi bi-person-plus fs-4 text-primary me-3"></i>
                         <div>

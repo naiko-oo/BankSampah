@@ -1,7 +1,7 @@
 <?php
 // login.php
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/config/helpers.php';
+require_once __DIR__ . '/../backend/config/database.php';
+require_once __DIR__ . '/../backend/config/helpers.php';
 
 // Jika sudah login, redirect sesuai peran
 if (auth_check()) {
@@ -16,7 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($username) || empty($password)) {
+    if (!csrf_valid($_POST['csrf_token'] ?? null)) {
+        $error = 'Sesi formulir tidak valid. Muat ulang halaman lalu coba kembali.';
+    } elseif (empty($username) || empty($password)) {
         $error = 'Silakan isi username dan kata sandi Anda.';
     } else {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username LIMIT 1");
@@ -25,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user && password_verify($password, $user['password'])) {
             // Login Berhasil
+            session_regenerate_id(true);
             $_SESSION['user'] = [
                 'id'            => $user['id'],
                 'username'      => $user['username'],
@@ -34,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'alamat'        => $user['alamat'],
             ];
 
-            set_flash('success', "Selamat datang kembali, <strong>" . htmlspecialchars($user['nama_lengkap']) . "</strong>!");
+            set_flash('success', 'Selamat datang kembali, ' . $user['nama_lengkap'] . '!');
             
             if ($user['role'] === 'admin') {
                 header('Location: /admin/index.php');
@@ -71,6 +74,7 @@ require_once __DIR__ . '/templates/header.php';
             <?php endif; ?>
 
             <form method="POST" action="/login.php">
+                <?= csrf_field(); ?>
                 <div class="mb-3">
                     <label for="username" class="form-label fw-semibold">Username</label>
                     <div class="input-group">

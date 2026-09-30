@@ -1,7 +1,7 @@
 <?php
 // nasabah/index.php
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/helpers.php';
+require_once __DIR__ . '/../../backend/config/database.php';
+require_once __DIR__ . '/../../backend/config/helpers.php';
 
 auth_require('nasabah');
 $user = auth_user();
@@ -12,19 +12,18 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id LIMIT 1");
 $stmt->execute([':id' => $userId]);
 $profile = $stmt->fetch();
 
-// Statistik nasabah
+// Statistik nominal dihitung terpisah dari detail agar tidak terduplikasi per kategori.
 $stmt = $pdo->prepare("
-    SELECT 
-        COUNT(t.id) AS total_transaksi,
-        SUM(CASE WHEN t.jenis_transaksi = 'setor' THEN t.total_nominal ELSE 0 END) AS total_disetor,
-        SUM(CASE WHEN t.jenis_transaksi = 'tarik' THEN t.total_nominal ELSE 0 END) AS total_ditarik,
-        COALESCE(SUM(td.berat_kg), 0) AS total_kg
-    FROM transactions t
-    LEFT JOIN transaction_details td ON t.id = td.transaction_id
-    WHERE t.user_id = :uid
+    SELECT COUNT(*) AS total_transaksi,
+        COALESCE(SUM(CASE WHEN jenis_transaksi = 'setor' THEN total_nominal ELSE 0 END), 0) AS total_disetor,
+        COALESCE(SUM(CASE WHEN jenis_transaksi = 'tarik' THEN total_nominal ELSE 0 END), 0) AS total_ditarik
+    FROM transactions WHERE user_id = :uid
 ");
 $stmt->execute([':uid' => $userId]);
 $stat = $stmt->fetch();
+$stmt = $pdo->prepare('SELECT COALESCE(SUM(d.berat_kg), 0) FROM transaction_details d JOIN transactions t ON t.id = d.transaction_id WHERE t.user_id = :uid');
+$stmt->execute([':uid' => $userId]);
+$stat['total_kg'] = $stmt->fetchColumn();
 
 // 5 Transaksi terakhir
 $stmt = $pdo->prepare("

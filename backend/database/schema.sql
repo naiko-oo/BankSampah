@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
     `total_nominal` DECIMAL(12, 2) NOT NULL,
     `catatan` TEXT DEFAULT NULL,
     `tanggal_transaksi` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_trans_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_trans_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_trans_admin` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

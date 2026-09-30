@@ -42,3 +42,18 @@ Proyek ini dinyatakan memenuhi kriteria keberhasilan berdasarkan parameter berik
 4. **Respon Antarmuka (UI/UX):** Antarmuka web dapat diakses dengan baik melalui perangkat desktop maupun *mobile browser*.
 
 Proyek ini dikembangkan untuk mendigitalkan proses pencatatan transaksi tersebut guna meningkatkan akurasi data, transparansi, dan efisiensi operasional pengelola.
+
+## Instalasi Lokal
+1. Siapkan PHP 8 atau lebih baru dengan ekstensi `pdo_mysql`, serta MySQL/MariaDB.
+2. Buat database dan tabel dengan mengimpor `backend/database/schema.sql` melalui phpMyAdmin atau klien MySQL.
+3. Sesuaikan host, port, nama database, username, dan kata sandi pada `backend/config/database.php`.
+4. Jadikan folder `frontend/` sebagai document root server lokal. Pada XAMPP, atur virtual host Apache agar document root menunjuk ke folder tersebut. Alternatifnya, jalankan dari folder proyek dengan `php -S localhost:8000 -t frontend`, lalu buka `http://localhost:8000/`.
+
+### Akun Demo
+| Peran | Username | Kata sandi |
+| --- | --- | --- |
+| Admin | `admin` | `admin123` |
+| Nasabah | `budi` | `password123` |
+| Nasabah | `siti` | `password123` |
+
+Ganti kata sandi demo sebelum aplikasi digunakan di lingkungan nyata. Admin dapat mengelola tarif dan nasabah, mencatat setoran/penarikan, melihat detail transaksi, serta mencetak laporan berdasarkan periode. Nasabah dapat melihat dashboard, riwayat, dan struk transaksinya sendiri.

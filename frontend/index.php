@@ -1,7 +1,7 @@
 <?php
 // index.php
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/config/helpers.php';
+require_once __DIR__ . '/../backend/config/database.php';
+require_once __DIR__ . '/../backend/config/helpers.php';
 
 // Jika sudah login, langsung arahkan ke dashboard masing-masing
 if (auth_check()) {

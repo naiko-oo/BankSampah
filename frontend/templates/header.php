@@ -1,6 +1,6 @@
 <?php
 // templates/header.php
-require_once __DIR__ . '/../config/helpers.php';
+require_once __DIR__ . '/../../backend/config/helpers.php';
 $currentUser = auth_user();
 $pageTitle = $pageTitle ?? 'Bank Sampah Digital';
 ?>
@@ -58,7 +58,7 @@ $pageTitle = $pageTitle ?? 'Bank Sampah Digital';
             <i class="bi bi-recycle fs-4"></i>
             <span>Bank Sampah RT/RW</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-dismiss="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
