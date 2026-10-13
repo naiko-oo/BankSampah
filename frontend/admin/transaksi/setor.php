@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/config/helpers.php';
+require_once __DIR__ . '/../../../backend/services/bank_sampah_rules.php';
 
 auth_require('admin');
 $errors = [];
@@ -22,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($categoryIds as $index => $categoryIdValue) {
             $categoryId = filter_var($categoryIdValue, FILTER_VALIDATE_INT);
             $weight = filter_var($weights[$index] ?? null, FILTER_VALIDATE_FLOAT);
-            if (!$categoryId || $weight === false || !is_finite((float)$weight) || round((float)$weight, 2) < 0.01) {
+            if (!$categoryId || $weight === false || !is_finite((float)$weight) || round((float)$weight, 2) < 0.01 || round((float)$weight, 2) > 999999.99) {
                 $errors[] = 'Setiap rincian harus memiliki kategori dan berat lebih besar dari nol.';
                 break;
             }
@@ -44,8 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([':id' => $detail['category_id']]);
                 $category = $stmt->fetch();
                 if (!$category) throw new RuntimeException('Salah satu kategori sudah tidak tersedia.');
-                $subtotal = round($detail['weight'] * (float)$category['harga_per_kg'], 2);
-                $total += $subtotal;
+                $subtotal = calculate_deposit_subtotal($detail['weight'], $category['harga_per_kg']);
+                $total = round($total + $subtotal, 2);
+                if (!is_finite($total) || $total > 9999999999.99) {
+                    throw new RuntimeException('Total setoran melebihi batas nominal sistem.');
+                }
                 $preparedDetails[] = ['category_id' => $detail['category_id'], 'weight' => $detail['weight'], 'price' => $category['harga_per_kg'], 'subtotal' => $subtotal];
             }
 

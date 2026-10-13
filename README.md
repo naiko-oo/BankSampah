@@ -27,6 +27,26 @@ Pengembangan fitur diprioritaskan pada fungsionalitas utama (*core functions*):
 * **Dashboard & Riwayat Transaksi:** Visualisasi saldo terkini dan daftar log transaksi untuk akun Nasabah.
 * **Laporan & Rekapitulasi Data:** Fitur pencetakan rekapitulasi transaksi berbasis rentang waktu untuk kebutuhan evaluasi pengurus.
 
+## User Stories & Acceptance Criteria MVP
+
+1. **Mengelola kategori sampah** — Sebagai admin, saya ingin mengelola kategori dan tarif agar nilai setoran menggunakan harga yang berlaku.
+   - Admin dapat menambah dan mengubah kategori dengan nama wajib (maksimal 100 karakter) dan tarif positif yang berada dalam batas nominal sistem.
+   - Kategori yang telah dipakai dalam transaksi tidak dapat dihapus.
+2. **Mengelola data nasabah** — Sebagai admin, saya ingin mengelola akun nasabah agar data pemilik tabungan akurat.
+   - Nama dan username wajib diisi dengan panjang sesuai batas skema; username tidak boleh sama dengan akun lain.
+   - Akun baru wajib memiliki kata sandi minimal 8 karakter; perubahan kata sandi bersifat opsional tetapi tetap minimal 8 karakter bila diisi.
+   - Nasabah yang memiliki transaksi tidak dapat dihapus.
+3. **Mencatat setoran** — Sebagai admin, saya ingin mencatat berat sampah per kategori agar saldo nasabah bertambah sesuai tarif.
+   - Setoran berisi sedikitnya satu rincian dengan berat positif maksimal 999.999,99 kg.
+   - Setiap subtotal dihitung dari berat dikali tarif dan dibulatkan ke dua angka desimal; subtotal dan total harus berada dalam batas nominal sistem.
+   - Transaksi, rincian, dan penambahan saldo berhasil bersama-sama atau tidak tersimpan sama sekali.
+4. **Mencatat penarikan** — Sebagai admin, saya ingin mencatat pencairan saldo agar tabungan berkurang secara akurat.
+   - Nominal penarikan harus positif dan tidak melebihi saldo yang tersedia saat transaksi diproses.
+   - Transaksi penarikan dan pengurangan saldo tersimpan bersama-sama; saldo tidak boleh negatif.
+5. **Memantau saldo dan riwayat** — Sebagai nasabah, saya ingin melihat saldo, riwayat, dan struk transaksi saya agar dapat memverifikasi tabungan.
+   - Dashboard dan riwayat menampilkan data akun nasabah yang sedang login.
+   - Nasabah hanya dapat membuka struk miliknya; admin dapat membuka struk seluruh nasabah.
+
 ## Batasan Proyek *(Out of Scope)*
 Untuk menjaga agar fokus analisis dan perancangan perangkat lunak tetap realistis dalam jangka waktu yang ditentukan, beberapa fitur berikut dieksklusi dari cakupan pengembangan saat ini:
 * Integrasi *Payment Gateway* / API *E-Wallet* (pencairan saldo dilakukan secara tunai oleh pengurus).

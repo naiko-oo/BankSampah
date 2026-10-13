@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/config/helpers.php';
+require_once __DIR__ . '/../../../backend/services/bank_sampah_rules.php';
 
 auth_require('admin');
 $errors = [];
@@ -35,10 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $alamat = trim($_POST['alamat'] ?? '');
             $password = $_POST['password'] ?? '';
 
-            if ($nama === '' || strlen($nama) > 100) $errors[] = 'Nama wajib diisi dan maksimal 100 karakter.';
-            if ($username === '' || strlen($username) > 50) $errors[] = 'Username wajib diisi dan maksimal 50 karakter.';
-            if (!$id && strlen($password) < 8) $errors[] = 'Kata sandi akun baru minimal 8 karakter.';
-            if ($password !== '' && strlen($password) < 8) $errors[] = 'Kata sandi baru minimal 8 karakter.';
+            $errors = member_validation_errors($nama, $username, $password, !$id);
 
             $stmt = $pdo->prepare('SELECT id FROM users WHERE username = :username AND id <> :id LIMIT 1');
             $stmt->execute([':username' => $username, ':id' => $id ?: 0]);

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/config/helpers.php';
+require_once __DIR__ . '/../../../backend/services/bank_sampah_rules.php';
 
 auth_require('admin');
 $errors = [];
@@ -31,12 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $harga = filter_var($_POST['harga_per_kg'] ?? null, FILTER_VALIDATE_FLOAT);
             $deskripsi = trim($_POST['deskripsi'] ?? '');
 
-            if ($nama === '' || strlen($nama) > 100) {
-                $errors[] = 'Nama kategori wajib diisi dan maksimal 100 karakter.';
-            }
-            if ($harga === false || $harga <= 0) {
-                $errors[] = 'Tarif per kilogram harus lebih besar dari nol.';
-            }
+            $errors = category_validation_errors($nama, $_POST['harga_per_kg'] ?? null);
 
             if (!$errors) {
                 if ($id) {

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/config/helpers.php';
+require_once __DIR__ . '/../../../backend/services/bank_sampah_rules.php';
 
 auth_require('admin');
 $errors = [];
@@ -12,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $note = trim($_POST['catatan'] ?? '');
     if (!csrf_valid($_POST['csrf_token'] ?? null)) $errors[] = 'Sesi formulir tidak valid. Muat ulang halaman lalu coba kembali.';
     if (!$userId) $errors[] = 'Pilih nasabah yang melakukan penarikan.';
-    if ($amount === false || !is_finite((float)$amount) || round((float)$amount, 2) <= 0) $errors[] = 'Nominal penarikan harus lebih besar dari nol.';
+    if ($amount === false || !is_finite((float)$amount) || round((float)$amount, 2) <= 0 || round((float)$amount, 2) > 9999999999.99) $errors[] = 'Nominal penarikan harus lebih besar dari nol dan tidak melebihi batas sistem.';
     else $amount = round((float)$amount, 2);
 
     if (!$errors) {
@@ -22,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':id' => $userId]);
             $person = $stmt->fetch();
             if (!$person) throw new RuntimeException('Nasabah yang dipilih tidak ditemukan.');
-            if ((float)$amount > (float)$person['saldo']) throw new RuntimeException('Saldo nasabah tidak mencukupi untuk penarikan tersebut.');
+            $withdrawalError = withdrawal_validation_error($amount, $person['saldo']);
+            if ($withdrawalError !== null) throw new RuntimeException($withdrawalError);
 
             $stmt = $pdo->prepare("INSERT INTO transactions (kode_transaksi, user_id, admin_id, jenis_transaksi, total_nominal, catatan) VALUES (:kode, :user, :admin, 'tarik', :total, :catatan)");
             $stmt->execute([':kode' => generate_kode_transaksi('tarik'), ':user' => $userId, ':admin' => auth_user()['id'], ':total' => $amount, ':catatan' => $note ?: null]);

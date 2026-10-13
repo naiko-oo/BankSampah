@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/config/helpers.php';
+require_once __DIR__ . '/../../../backend/services/bank_sampah_rules.php';
 
 if (!auth_check()) {
     set_flash('warning', 'Silakan login untuk melihat detail transaksi.');
@@ -11,7 +12,7 @@ $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $stmt = $pdo->prepare('SELECT t.*, u.nama_lengkap AS nama_nasabah, u.username, a.nama_lengkap AS nama_admin FROM transactions t JOIN users u ON u.id = t.user_id JOIN users a ON a.id = t.admin_id WHERE t.id = :id');
 $stmt->execute([':id' => $id ?: 0]);
 $transaction = $stmt->fetch();
-if (!$transaction || (auth_user()['role'] !== 'admin' && (int)$transaction['user_id'] !== (int)auth_user()['id'])) {
+if (!$transaction || !transaction_visible_to_user(auth_user()['role'], (int)auth_user()['id'], (int)$transaction['user_id'])) {
     http_response_code(404);
     exit('Transaksi tidak ditemukan.');
 }
