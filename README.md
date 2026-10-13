@@ -69,6 +69,16 @@ Proyek ini dikembangkan untuk mendigitalkan proses pencatatan transaksi tersebut
 3. Sesuaikan host, port, nama database, username, dan kata sandi pada `backend/config/database.php`.
 4. Jadikan folder `frontend/` sebagai document root server lokal. Pada XAMPP, atur virtual host Apache agar document root menunjuk ke folder tersebut. Untuk server development, jalankan dari folder proyek dengan `php -S localhost:8000 -t frontend`. Jika `php` tidak dikenali di PowerShell, gunakan `C:\xampp\php\php.exe -S localhost:8000 -t frontend`. Buka `http://localhost:8000/`.
 
+## Menjalankan Unit Test
+
+Unit test aturan bisnis tersedia di folder `tests/` dan tidak memerlukan database atau framework tambahan. Dari root proyek, jalankan:
+
+```powershell
+php tests\run.php
+```
+
+Runner akan menjalankan semua file `*Test.php` dan mengembalikan exit code gagal bila ada test yang gagal. Jika PHP tidak ada di `PATH` pada Windows/XAMPP, jalankan `C:\xampp\php\php.exe tests\run.php`.
+
 ### Akun Demo
 | Peran | Username | Kata sandi |
 | --- | --- | --- |
