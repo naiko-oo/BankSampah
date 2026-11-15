@@ -1,24 +1,42 @@
 ## Tujuan
 Sistem Informasi Bank Sampah Digital RT/RW dibuat untuk membantu pengurus mencatat setoran sampah, penarikan saldo, data nasabah, kategori sampah, dan laporan transaksi secara terstruktur.
 
+Dokumen ini berisi kebutuhan dan rancangan produk. Implementasi PHP lama di `archive/php-legacy/` tetap dipertahankan sebagai referensi, sedangkan versi Next.js di `next-app/` sedang dibangun untuk deployment di Vercel. Daftar kebutuhan di bawah tetap menjadi target; bagian **Status Implementasi Next.js** mencatat fitur yang sudah tersedia saat ini.
+
 ## Tech Stack
-* **Frontend:** PHP server-rendered, HTML, CSS, Bootstrap 5, dan Bootstrap Icons.
-* **Backend:** PHP.
-* **Database:** MySQL.
-* **Koneksi Database:** PDO dengan prepared statement.
+### Implementasi Next.js (target Vercel)
+* **Frontend dan backend:** Next.js App Router, React, TypeScript, dan server actions.
+* **Session:** Cookie HTTP-only yang ditandatangani dengan `iron-session`.
+* **Database:** MySQL/MariaDB yang di-host terpisah dari Vercel.
+* **Koneksi database:** `mysql2/promise` dengan parameter query.
+
+### Implementasi PHP lama
+* **Frontend dan backend:** PHP server-rendered, HTML, CSS, Bootstrap 5, dan Bootstrap Icons.
+* **Database:** MySQL/MariaDB.
+* **Koneksi database:** PDO dengan prepared statement.
+
+## Status Implementasi Next.js
+Fitur berikut sudah tersedia dalam versi awal di `next-app/`:
+* Login/logout admin dan nasabah, dengan pembatasan akses berdasarkan peran.
+* Pengelolaan kategori dan akun nasabah.
+* Pencatatan setoran multi-kategori dan penarikan saldo menggunakan transaksi database atomik.
+* Dashboard admin dan nasabah, daftar transaksi, riwayat nasabah, laporan periode, dan struk yang dapat dicetak.
+* UI berbahasa Indonesia dan responsif.
+
+Halaman publik dengan daftar tarif, ringkasan statistik tambahan pada dashboard, serta dialog konfirmasi penghapusan masih merupakan kebutuhan rancangan dan belum tersedia pada versi Next.js saat ini. Integrasi MySQL produksi dan deployment Vercel juga masih perlu dikonfigurasi; lihat `next-app/README.md`.
 
 ## Aturan Kode
 * Gunakan bahasa Indonesia untuk label, pesan, validasi, dan tampilan pengguna.
-* Gunakan prepared statement untuk query yang menerima input pengguna.
-* Gunakan `htmlspecialchars` saat menampilkan data dari database.
-* Gunakan fungsi helper bersama untuk format Rupiah, berat, tanggal, autentikasi, dan pesan notifikasi.
+* Gunakan parameter query/prepared statement untuk query yang menerima input pengguna.
+* Escape data dinamis sesuai konteks output.
+* Gunakan helper bersama untuk format Rupiah, berat, tanggal, dan autentikasi.
 * Gunakan validasi server untuk seluruh data transaksi.
 * Nilai berat sampah tidak boleh negatif atau kosong.
 * Nilai penarikan harus lebih besar dari nol dan tidak boleh melebihi saldo nasabah.
-* Gunakan kata sandi yang sudah di-hash menggunakan `password_hash`.
-* Batasi halaman berdasarkan peran pengguna menggunakan pemeriksaan sesi.
+* Simpan kata sandi dalam bentuk hash yang aman; pertahankan kompatibilitas hash akun lama saat migrasi.
+* Batasi halaman dan tindakan server berdasarkan peran pengguna yang terautentikasi.
 * Gunakan nama tabel dan kolom yang konsisten dengan skema database.
-* Hindari duplikasi struktur halaman dengan menggunakan template header dan footer.
+* Hindari duplikasi struktur halaman dengan menggunakan layout dan komponen bersama.
 
 ## Entitas Utama
 
@@ -81,12 +99,12 @@ Entitas `TransactionDetail` menyimpan rincian kategori sampah pada transaksi set
 * Gunakan relasi foreign key antara pengguna, kategori, transaksi, dan rincian transaksi.
 * Gunakan transaksi database ketika menyimpan setoran atau penarikan bersama perubahan saldo.
 
-## Fitur Backend
+## Kebutuhan Fitur Backend
 
 ### 1. Autentikasi Pengguna
 * Login menggunakan username dan kata sandi.
 * Verifikasi kata sandi menggunakan hash.
-* Penyimpanan identitas pengguna menggunakan sesi PHP.
+* Simpan identitas pengguna dalam sesi yang aman.
 * Logout dengan menghapus sesi pengguna.
 * Pengalihan pengguna ke dashboard sesuai peran.
 * Penolakan akses jika pengguna belum login atau tidak memiliki peran yang sesuai.
@@ -135,7 +153,7 @@ Entitas `TransactionDetail` menyimpan rincian kategori sampah pada transaksi set
 * Menyediakan rekapitulasi transaksi berdasarkan periode.
 * Menyediakan detail atau struk transaksi.
 
-## Halaman Frontend
+## Kebutuhan Halaman Frontend
 
 ### 1. Beranda
 * Menampilkan nama dan tujuan Sistem Informasi Bank Sampah Digital.
@@ -207,9 +225,10 @@ Entitas `TransactionDetail` menyimpan rincian kategori sampah pada transaksi set
 * Pastikan tampilan dapat digunakan pada desktop dan peramban seluler.
 
 ## Deliverables
-* Source code PHP untuk halaman publik, autentikasi, admin, nasabah, dan template.
-* File konfigurasi koneksi MySQL menggunakan PDO.
-* Skema database MySQL pada `backend/database/schema.sql`.
+* Source code Next.js/TypeScript untuk halaman, autentikasi, tindakan server, dan layout.
+* Source code PHP lama untuk halaman dan backend sebagai implementasi referensi.
+* Konfigurasi koneksi MySQL menggunakan `mysql2` pada Next.js dan PDO pada versi PHP.
+* Skema database MySQL pada `archive/php-legacy/backend/database/schema.sql`.
 * Data awal akun demo dan kategori sampah.
 * Fitur login, logout, dan pembatasan akses berdasarkan peran.
 * Dashboard Admin dan Dashboard Nasabah.
@@ -226,28 +245,37 @@ Entitas `TransactionDetail` menyimpan rincian kategori sampah pada transaksi set
 bank-sampah/
   README.md
   WEBDETAIL.md
-  frontend/                 # Document root aplikasi
-    index.php
-    login.php
-    logout.php
-    admin/
-      index.php
-      kategori/
-      nasabah/
-      transaksi/
-      laporan/
-    nasabah/
-      index.php
-      riwayat.php
-    templates/
-      header.php
-      footer.php
-  backend/
-    config/
-      database.php
-      helpers.php
-    database/
-      schema.sql
+  next-app/                 # Aplikasi Next.js untuk deployment ke Vercel
+    src/
+      app/                  # Halaman, layout, dan server actions
+      lib/                  # Koneksi database, autentikasi, dan helper
+    .env.example
+    README.md
+  archive/
+    php-legacy/
+      backend/
+        config/
+          database.php
+          helpers.php
+        database/
+          schema.sql
+      tests/                # Unit test aplikasi PHP lama
+      frontend/             # Aplikasi PHP lama
+        index.php
+        login.php
+        logout.php
+        admin/
+          index.php
+          kategori/
+          nasabah/
+          transaksi/
+          laporan/
+        nasabah/
+          index.php
+          riwayat.php
+        templates/
+          header.php
+          footer.php
 ```
 
 ## Aturan Model

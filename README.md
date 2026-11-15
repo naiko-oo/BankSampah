@@ -1,6 +1,11 @@
 # ♻️ Sistem Informasi Bank Sampah Digital (RT/RW)
 > *Sistem Informasi Pengelolaan dan Pencatatan Transaksi Bank Sampah Berbasis Web untuk Tingkatkan Efisiensi Administrasi di Lingkungan RT/RW.*
 
+## Versi Next.js untuk Vercel
+Proyek ini sekarang memiliki versi Next.js full-stack di folder [`next-app/`](./next-app/), yang ditujukan untuk deployment ke Vercel. Petunjuk setup lokal, konfigurasi MySQL, dan deployment tersedia di [`next-app/README.md`](./next-app/README.md).
+
+Kode PHP tetap disimpan sebagai versi lama dan referensi di [`archive/php-legacy/`](./archive/php-legacy/); PHP tersebut tidak dijalankan langsung oleh Vercel.
+
 ## Latar Belakang & Permasalahan
 Dalam skema pengelolaan Bank Sampah, proses pencatatan transaksi umumnya masih menggunakan metode konvensional (buku besar). Metode ini memiliki beberapa kendala teknis dan operasional, antara lain:
 * **Tingkat Aksesibilitas Data yang Rendah:** Nasabah (warga) tidak memiliki akses *real-time* untuk memantau saldo tabungan dan riwayat setoran sampah mereka.
@@ -63,21 +68,29 @@ Proyek ini dinyatakan memenuhi kriteria keberhasilan berdasarkan parameter berik
 
 Proyek ini dikembangkan untuk mendigitalkan proses pencatatan transaksi tersebut guna meningkatkan akurasi data, transparansi, dan efisiensi operasional pengelola.
 
-## Instalasi Lokal
+## Menjalankan Versi PHP Lama
 1. Siapkan PHP 8 atau lebih baru dengan ekstensi `pdo_mysql`, serta MySQL/MariaDB.
-2. Buat database dan tabel dengan mengimpor `backend/database/schema.sql` melalui phpMyAdmin atau klien MySQL.
-3. Sesuaikan host, port, nama database, username, dan kata sandi pada `backend/config/database.php`.
-4. Jadikan folder `frontend/` sebagai document root server lokal. Pada XAMPP, atur virtual host Apache agar document root menunjuk ke folder tersebut. Untuk server development, jalankan dari folder proyek dengan `php -S localhost:8000 -t frontend`. Jika `php` tidak dikenali di PowerShell, gunakan `C:\xampp\php\php.exe -S localhost:8000 -t frontend`. Buka `http://localhost:8000/`.
+2. Buat database dan tabel dengan mengimpor `archive/php-legacy/backend/database/schema.sql` melalui phpMyAdmin atau klien MySQL.
+3. Sesuaikan host, port, nama database, username, dan kata sandi pada `archive/php-legacy/backend/config/database.php`.
+4. Jadikan `archive/php-legacy/frontend/` sebagai document root server lokal. Untuk server development, masuk ke folder `archive/php-legacy` lalu jalankan `php -S localhost:8000 -t frontend`. Jika `php` tidak dikenali di PowerShell, gunakan `C:\xampp\php\php.exe -S localhost:8000 -t frontend`. Buka `http://localhost:8000/`.
 
-## Menjalankan Unit Test
+## Menjalankan Unit Test Versi PHP
 
-Unit test aturan bisnis tersedia di folder `tests/` dan tidak memerlukan database atau framework tambahan. Dari root proyek, jalankan:
+Unit test aturan bisnis versi PHP tersedia di `archive/php-legacy/tests/` dan tidak memerlukan database atau framework tambahan. Dari root proyek, jalankan:
 
 ```powershell
-php tests\run.php
+php archive\php-legacy\tests\run.php
 ```
 
-Runner akan menjalankan semua file `*Test.php` dan mengembalikan exit code gagal bila ada test yang gagal. Jika PHP tidak ada di `PATH` pada Windows/XAMPP, jalankan `C:\xampp\php\php.exe tests\run.php`.
+Runner akan menjalankan semua file `*Test.php` dan mengembalikan exit code gagal bila ada test yang gagal. Jika PHP tidak ada di `PATH` pada Windows/XAMPP, jalankan `C:\xampp\php\php.exe archive\php-legacy\tests\run.php`.
+
+## Menjalankan Unit Test Versi Next.js
+
+Unit test Vitest untuk aplikasi Next.js berada di `next-app/src/lib/`. Jalankan dari folder `next-app/`:
+
+```powershell
+npm.cmd test
+```
 
 ### Akun Demo
 | Peran | Username | Kata sandi |
