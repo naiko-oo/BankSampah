@@ -7,8 +7,8 @@ Dokumen ini berisi kebutuhan dan rancangan produk. Implementasi PHP lama di `arc
 ### Implementasi Next.js (target Vercel)
 * **Frontend dan backend:** Next.js App Router, React, TypeScript, dan server actions.
 * **Session:** Cookie HTTP-only yang ditandatangani dengan `iron-session`.
-* **Database:** MySQL/MariaDB yang di-host terpisah dari Vercel.
-* **Koneksi database:** `mysql2/promise` dengan parameter query.
+* **Database:** PostgreSQL terkelola di Supabase.
+* **Koneksi database:** `pg` dengan parameter query.
 
 ### Implementasi PHP lama
 * **Frontend dan backend:** PHP server-rendered, HTML, CSS, Bootstrap 5, dan Bootstrap Icons.
@@ -23,7 +23,7 @@ Fitur berikut sudah tersedia dalam versi awal di `next-app/`:
 * Dashboard admin dan nasabah, daftar transaksi, riwayat nasabah, laporan periode, dan struk yang dapat dicetak.
 * UI berbahasa Indonesia dan responsif.
 
-Halaman publik dengan daftar tarif, ringkasan statistik tambahan pada dashboard, serta dialog konfirmasi penghapusan masih merupakan kebutuhan rancangan dan belum tersedia pada versi Next.js saat ini. Integrasi MySQL produksi dan deployment Vercel juga masih perlu dikonfigurasi; lihat `next-app/README.md`.
+Halaman publik dengan daftar tarif, ringkasan statistik tambahan pada dashboard, serta dialog konfirmasi penghapusan masih merupakan kebutuhan rancangan dan belum tersedia pada versi Next.js saat ini. Koneksi Supabase dan deployment Vercel masih perlu dikonfigurasi; lihat `next-app/README.md`.
 
 ## Aturan Kode
 * Gunakan bahasa Indonesia untuk label, pesan, validasi, dan tampilan pengguna.
@@ -227,7 +227,7 @@ Entitas `TransactionDetail` menyimpan rincian kategori sampah pada transaksi set
 ## Deliverables
 * Source code Next.js/TypeScript untuk halaman, autentikasi, tindakan server, dan layout.
 * Source code PHP lama untuk halaman dan backend sebagai implementasi referensi.
-* Konfigurasi koneksi MySQL menggunakan `mysql2` pada Next.js dan PDO pada versi PHP.
+* Konfigurasi koneksi PostgreSQL menggunakan `pg` pada Next.js dan MySQL/PDO pada versi PHP lama.
 * Skema database MySQL pada `archive/php-legacy/backend/database/schema.sql`.
 * Data awal akun demo dan kategori sampah.
 * Fitur login, logout, dan pembatasan akses berdasarkan peran.

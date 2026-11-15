@@ -2,9 +2,9 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatRupiah, formatTanggal } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 
-interface Transaction extends RowDataPacket {
+interface Transaction extends QueryResultRow {
   id: number;
   kode_transaksi: string;
   jenis_transaksi: "setor" | "tarik";

@@ -3,9 +3,9 @@ import { deleteMember, saveMember } from "@/app/actions/admin";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatRupiah } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 
-interface Member extends RowDataPacket {
+interface Member extends QueryResultRow {
   id: number;
   username: string;
   nama_lengkap: string;

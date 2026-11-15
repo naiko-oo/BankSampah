@@ -2,9 +2,9 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatRupiah, formatTanggal } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 
-interface Transaction extends RowDataPacket {
+interface Transaction extends QueryResultRow {
   id: number;
   kode_transaksi: string;
   jenis_transaksi: "setor" | "tarik";
@@ -32,18 +32,18 @@ export default async function MemberHistoryPage({ searchParams }: HistoryPagePro
     (start !== "" && !isValidDate(start)) ||
     (end !== "" && !isValidDate(end)) ||
     (isValidDate(start) && isValidDate(end) && start > end);
-  const conditions = ["user_id = ?"];
+  const conditions = ["user_id = $1"];
   const values: (string | number)[] = [user.id];
   if (kind) {
-    conditions.push("jenis_transaksi = ?");
+    conditions.push(`jenis_transaksi = $${values.length + 1}`);
     values.push(kind);
   }
   if (start && isValidDate(start)) {
-    conditions.push("tanggal_transaksi >= ?");
+    conditions.push(`tanggal_transaksi >= $${values.length + 1}::timestamp`);
     values.push(`${start} 00:00:00`);
   }
   if (end && isValidDate(end)) {
-    conditions.push("tanggal_transaksi < DATE_ADD(?, INTERVAL 1 DAY)");
+    conditions.push(`tanggal_transaksi < $${values.length + 1}::date + INTERVAL '1 day'`);
     values.push(end);
   }
   const transactions = invalidFilter ? [] : await query<Transaction>(

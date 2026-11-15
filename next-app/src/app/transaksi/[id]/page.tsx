@@ -2,11 +2,11 @@ import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatBerat, formatRupiah, formatTanggal } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 import PrintButton from "@/app/PrintButton";
 import { notFound } from "next/navigation";
 
-interface Transaction extends RowDataPacket {
+interface Transaction extends QueryResultRow {
   id: number;
   kode_transaksi: string;
   jenis_transaksi: "setor" | "tarik";
@@ -19,7 +19,7 @@ interface Transaction extends RowDataPacket {
   nama_admin: string;
 }
 
-interface Detail extends RowDataPacket {
+interface Detail extends QueryResultRow {
   nama_kategori: string;
   berat_kg: string;
   harga_per_kg: string;
@@ -43,7 +43,7 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
     FROM transactions t
     JOIN users u ON u.id = t.user_id
     JOIN users a ON a.id = t.admin_id
-    WHERE t.id = ?`,
+    WHERE t.id = $1`,
     [id],
   );
   const transaction = transactions[0];
@@ -55,7 +55,7 @@ export default async function ReceiptPage({ params }: ReceiptPageProps) {
     ? await query<Detail>(
       `SELECT c.nama_kategori, d.berat_kg, d.harga_per_kg, d.subtotal
       FROM transaction_details d JOIN categories c ON c.id = d.category_id
-      WHERE d.transaction_id = ? ORDER BY d.id`,
+      WHERE d.transaction_id = $1 ORDER BY d.id`,
       [id],
     )
     : [];

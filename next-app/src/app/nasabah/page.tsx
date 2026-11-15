@@ -2,13 +2,13 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatRupiah, formatTanggal } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 
-interface MemberBalance extends RowDataPacket {
+interface MemberBalance extends QueryResultRow {
   saldo: string;
 }
 
-interface RecentTransaction extends RowDataPacket {
+interface RecentTransaction extends QueryResultRow {
   id: number;
   kode_transaksi: string;
   jenis_transaksi: "setor" | "tarik";
@@ -18,9 +18,9 @@ interface RecentTransaction extends RowDataPacket {
 
 export default async function MemberDashboard() {
   const user = await requireRole("nasabah");
-  const [account] = await query<MemberBalance>("SELECT saldo FROM users WHERE id = ? AND role = 'nasabah'", [user.id]);
+  const [account] = await query<MemberBalance>("SELECT saldo FROM users WHERE id = $1 AND role = 'nasabah'", [user.id]);
   const transactions = await query<RecentTransaction>(
-    "SELECT id, kode_transaksi, jenis_transaksi, total_nominal, tanggal_transaksi FROM transactions WHERE user_id = ? ORDER BY tanggal_transaksi DESC, id DESC LIMIT 5",
+    "SELECT id, kode_transaksi, jenis_transaksi, total_nominal, tanggal_transaksi FROM transactions WHERE user_id = $1 ORDER BY tanggal_transaksi DESC, id DESC LIMIT 5",
     [user.id],
   );
 

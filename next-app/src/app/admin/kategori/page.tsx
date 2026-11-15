@@ -3,9 +3,9 @@ import { deleteCategory, saveCategory } from "@/app/actions/admin";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatRupiah } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 
-interface Category extends RowDataPacket {
+interface Category extends QueryResultRow {
   id: number;
   nama_kategori: string;
   harga_per_kg: string;

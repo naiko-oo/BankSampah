@@ -3,9 +3,9 @@ import { recordWithdrawal } from "@/app/actions/admin";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatRupiah } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 
-interface MemberOption extends RowDataPacket {
+interface MemberOption extends QueryResultRow {
   id: number;
   nama_lengkap: string;
   username: string;

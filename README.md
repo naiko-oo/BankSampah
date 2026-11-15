@@ -2,7 +2,7 @@
 > *Sistem Informasi Pengelolaan dan Pencatatan Transaksi Bank Sampah Berbasis Web untuk Tingkatkan Efisiensi Administrasi di Lingkungan RT/RW.*
 
 ## Versi Next.js untuk Vercel
-Proyek ini sekarang memiliki versi Next.js full-stack di folder [`next-app/`](./next-app/), yang ditujukan untuk deployment ke Vercel. Petunjuk setup lokal, konfigurasi MySQL, dan deployment tersedia di [`next-app/README.md`](./next-app/README.md).
+Proyek ini sekarang memiliki versi Next.js full-stack di folder [`next-app/`](./next-app/), yang ditujukan untuk deployment ke Vercel dengan PostgreSQL di Supabase. Petunjuk setup, migrasi data dari MySQL, dan deployment tersedia di [`next-app/README.md`](./next-app/README.md).
 
 Kode PHP tetap disimpan sebagai versi lama dan referensi di [`archive/php-legacy/`](./archive/php-legacy/); PHP tersebut tidak dijalankan langsung oleh Vercel.
 

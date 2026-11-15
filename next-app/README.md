@@ -1,6 +1,6 @@
 # Bank Sampah Digital — Next.js
 
-Versi Next.js full-stack untuk deployment di Vercel. Aplikasi PHP lama tetap berada di folder induk dan tidak diubah. Versi ini menggunakan Next.js App Router, React, TypeScript, MySQL, dan session cookie yang ditandatangani.
+Versi Next.js full-stack untuk deployment di Vercel. Aplikasi PHP lama tetap berada di folder induk dan tidak diubah. Versi ini menggunakan Next.js App Router, React, TypeScript, PostgreSQL (Supabase), dan session cookie yang ditandatangani.
 
 ## Fitur
 
@@ -12,9 +12,9 @@ Versi Next.js full-stack untuk deployment di Vercel. Aplikasi PHP lama tetap ber
 
 ## Menjalankan lokal
 
-1. Pasang Node.js 22 atau lebih baru dan MySQL/MariaDB.
-2. Buat database MySQL. Untuk instalasi baru, impor skema dari `../archive/php-legacy/backend/database/schema.sql`.
-3. Salin `.env.example` menjadi `.env.local`, lalu sesuaikan URL koneksi database.
+1. Pasang Node.js 22 atau lebih baru.
+2. Buat tabel PostgreSQL dengan menjalankan `supabase/schema.sql` di Supabase SQL Editor.
+3. Salin `.env.example` menjadi `.env.local`, lalu isi `DATABASE_URL` dengan connection string PostgreSQL Supabase.
 4. Buat rahasia session acak dengan PowerShell:
 
    ```powershell
@@ -45,11 +45,11 @@ Ganti kata sandi demo sebelum aplikasi dipakai di lingkungan nyata.
 
 1. Impor repository Git ke Vercel dan atur **Root Directory** menjadi `next-app`.
 2. Tambahkan `DATABASE_URL` dan `SESSION_PASSWORD` pada Environment Variables Vercel untuk environment yang digunakan.
-3. Sediakan MySQL terkelola yang dapat menerima koneksi dari deployment Vercel. Gunakan TLS jika diwajibkan oleh penyedia database; tambahkan `?ssl=true` pada `DATABASE_URL` untuk mengaktifkan verifikasi sertifikat TLS.
-4. Impor skema dan data ke database produksi sebelum membuka aplikasi. Untuk data bank sampah yang sudah digunakan, buat backup dan ekspor/impor data dengan menjaga ID, relasi, saldo, transaksi, serta hash kata sandi.
+3. Gunakan connection string PostgreSQL Supabase untuk `DATABASE_URL` dan jangan membagikan kredensial database.
+4. Jalankan `supabase/schema.sql` pada Supabase SQL Editor. Untuk menyalin data dari database MySQL lokal, salin `.env.migration.example` ke `.env.migration.local`, isi `SOURCE_MYSQL_URL`, dan jalankan `npm run migrate:mysql`. Skrip hanya menyalin ke tabel Supabase yang masih kosong; backup sumber terlebih dahulu.
 5. Deploy aplikasi. URL publik mengarah ke aplikasi Next.js; database tetap dikelola di layanan terpisah.
 
-Jangan gunakan server MySQL XAMPP lokal sebagai database produksi publik. Batasi kredensial database, siapkan backup rutin, dan ganti kata sandi demo.
+Jangan gunakan server MySQL XAMPP lokal sebagai database produksi publik. Skrip migrasi memerlukan database sumber MySQL lokal yang sudah berisi data. Batasi kredensial database, siapkan backup rutin, dan ganti kata sandi demo.
 
 ## Pemeriksaan
 

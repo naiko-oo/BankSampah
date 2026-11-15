@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 import DepositForm from "../DepositForm";
 
-interface MemberOption extends RowDataPacket {
+interface MemberOption extends QueryResultRow {
   id: number;
   nama_lengkap: string;
   username: string;
 }
 
-interface CategoryOption extends RowDataPacket {
+interface CategoryOption extends QueryResultRow {
   id: number;
   nama_kategori: string;
   harga_per_kg: string;

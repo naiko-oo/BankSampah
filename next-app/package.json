@@ -10,18 +10,21 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "migrate:mysql": "node scripts/migrate-mysql-to-postgres.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "iron-session": "^9.1.0",
     "mysql2": "^3.24.6",
     "next": "16.4.6",
+    "pg": "^8.23.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

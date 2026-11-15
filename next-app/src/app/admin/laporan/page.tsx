@@ -2,16 +2,16 @@ import Link from "next/link";
 import { requireRole } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { formatBerat, formatRupiah, formatTanggal } from "@/lib/format";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 import PrintButton from "@/app/PrintButton";
 
-interface ReportSummary extends RowDataPacket {
-  jumlah: number;
+interface ReportSummary extends QueryResultRow {
+  jumlah: string;
   setoran: string;
   penarikan: string;
 }
 
-interface ReportTransaction extends RowDataPacket {
+interface ReportTransaction extends QueryResultRow {
   id: number;
   kode_transaksi: string;
   jenis_transaksi: "setor" | "tarik";
@@ -56,13 +56,13 @@ export default async function ReportPage({ searchParams }: ReportPageProps) {
       `SELECT COUNT(*) AS jumlah,
         COALESCE(SUM(CASE WHEN jenis_transaksi = 'setor' THEN total_nominal ELSE 0 END), 0) AS setoran,
         COALESCE(SUM(CASE WHEN jenis_transaksi = 'tarik' THEN total_nominal ELSE 0 END), 0) AS penarikan
-      FROM transactions WHERE tanggal_transaksi >= ? AND tanggal_transaksi < DATE_ADD(?, INTERVAL 1 DAY)`,
+      FROM transactions WHERE tanggal_transaksi >= $1::timestamp AND tanggal_transaksi < $2::date + INTERVAL '1 day'`,
       values,
     );
-    const [weight] = await query<RowDataPacket & { total_berat: string }>(
+    const [weight] = await query<QueryResultRow & { total_berat: string }>(
       `SELECT COALESCE(SUM(d.berat_kg), 0) AS total_berat
       FROM transaction_details d JOIN transactions t ON t.id = d.transaction_id
-      WHERE t.tanggal_transaksi >= ? AND t.tanggal_transaksi < DATE_ADD(?, INTERVAL 1 DAY)`,
+      WHERE t.tanggal_transaksi >= $1::timestamp AND t.tanggal_transaksi < $2::date + INTERVAL '1 day'`,
       values,
     );
     totalWeight = weight?.total_berat ?? "0";
@@ -74,7 +74,7 @@ export default async function ReportPage({ searchParams }: ReportPageProps) {
         SELECT transaction_id, SUM(berat_kg) AS total_berat
         FROM transaction_details GROUP BY transaction_id
       ) d ON d.transaction_id = t.id
-      WHERE t.tanggal_transaksi >= ? AND t.tanggal_transaksi < DATE_ADD(?, INTERVAL 1 DAY)
+      WHERE t.tanggal_transaksi >= $1::timestamp AND t.tanggal_transaksi < $2::date + INTERVAL '1 day'
       ORDER BY t.tanggal_transaksi DESC, t.id DESC`,
       values,
     );

@@ -1,12 +1,12 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import type { RowDataPacket } from "mysql2";
+import type { QueryResultRow } from "pg";
 import { redirect } from "next/navigation";
 import { query } from "@/lib/db";
 import { getSession, type SessionUser, type UserRole } from "@/lib/session";
 
-interface LoginRow extends RowDataPacket {
+interface LoginRow extends QueryResultRow {
   id: number;
   username: string;
   password: string;
@@ -23,7 +23,7 @@ export async function login(formData: FormData): Promise<void> {
   }
 
   const users = await query<LoginRow>(
-    "SELECT id, username, password, nama_lengkap, role FROM users WHERE username = ? LIMIT 1",
+    "SELECT id, username, password, nama_lengkap, role FROM users WHERE username = $1 LIMIT 1",
     [username],
   );
   const user = users[0];
